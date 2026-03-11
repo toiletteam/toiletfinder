@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Toilet Finder — Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+a{text-decoration:none}
+
+:root{
+  --bg:#fff;--bg-header:#f6f6f6;--panel:#fafafa;
+  --btn:#efefef;--btn-hover:#e4e4e4;--border:#e4e4e4;
+  --text:#111;--text-mid:#666;--text-dim:#bbb;--accent:#111;
+}
+body.dark{
+  --bg:#181818;--bg-header:#101010;--panel:#1f1f1f;
+  --btn:#262626;--btn-hover:#2e2e2e;--border:#2a2a2a;
+  --text:#eee;--text-mid:#aaa;--text-dim:#555;--accent:#fff;
+}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);color:var(--text);transition:background .2s,color .2s;
+  font-size:14px;
+}
+
+/* ── HEADER ── */
+.header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 18px;background:var(--bg-header);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+}
+.logo-area{display:flex;align-items:center;gap:9px}
+.logo{width:32px;height:32px;border-radius:7px;object-fit:contain}
+.logo-text{font-size:13px;font-weight:700;letter-spacing:-.02em}
+.logo-ver{font-size:10px;color:var(--text-dim);margin-top:1px}
+.header-right{display:flex;gap:5px;align-items:center}
+
+.btn{
+  height:28px;padding:0 10px;border-radius:5px;
+  border:1px solid var(--border);background:var(--bg);
+  font-size:11px;cursor:pointer;display:flex;align-items:center;gap:5px;
+  color:var(--text-mid);transition:all .13s;font-family:inherit;
+}
+.btn:hover{background:var(--btn-hover);color:var(--text)}
+.btn svg{width:13px;height:13px;pointer-events:none;flex-shrink:0}
+#sunIcon{display:none}
+body.dark #sunIcon{display:block}
+body.dark #moonIcon{display:none}
+
+select.btn{
+  padding:0 24px 0 8px;appearance:none;-webkit-appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23999' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 7px center;
+}
+
+/* ── NAV ── */
+.nav{
+  display:flex;background:var(--bg-header);border-bottom:1px solid var(--border);
+  position:sticky;top:57px;z-index:99;overflow-x:auto;
+}
+.nav::-webkit-scrollbar{display:none}
+.tab{
+  flex:1;min-width:90px;height:34px;background:none;border:none;
+  border-bottom:2px solid transparent;font-size:11px;font-family:inherit;
+  cursor:pointer;color:var(--text-mid);transition:all .13s;white-space:nowrap;padding:0 6px;
+}
+.tab:hover{color:var(--text)}
+.tab.active{border-bottom-color:var(--accent);color:var(--text);font-weight:500}
+
+/* ── HERO ── */
+.hero{
+  text-align:center;padding:44px 20px 36px;
+  background:var(--bg);border-bottom:1px solid var(--border);
+}
+.hero-eyebrow{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;}
+.hero-title{font-size:30px;font-weight:700;letter-spacing:-.04em;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:12px;}
+.hero-logo{width:38px;height:38px;object-fit:contain;}
+.hero-desc{font-size:14px;color:var(--text-mid);max-width:460px;margin:0 auto 22px;line-height:1.6}
+.hero-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-bottom:30px}
+.hbadge{font-size:10.5px;color:var(--text-mid);background:var(--btn);border:1px solid var(--border);border-radius:20px;padding:3px 10px;}
+.hbadge.live{color:#16a34a;border-color:#bbf7d0;background:#f0fdf4}
+body.dark .hbadge.live{color:#4ade80;border-color:#166534;background:#052e16}
+
+/* ── DOWNLOAD SECTION ── */
+.download-section{
+  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+  margin-bottom:28px;
+}
+.dl-card{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;
+  padding:18px 22px;min-width:170px;transition:all .15s;cursor:pointer;
+}
+.dl-card:hover{border-color:#aaa;box-shadow:0 4px 14px rgba(0,0,0,.1);transform:translateY(-2px)}
+.dl-card-icon{
+  width:44px;height:44px;border-radius:10px;
+  background:var(--btn);display:flex;align-items:center;justify-content:center;
+}
+.dl-card-icon svg{width:20px;height:20px;color:var(--text-mid)}
+.dl-card-title{font-size:13px;font-weight:600;color:var(--text)}
+.dl-card-sub{font-size:11px;color:var(--text-dim);text-align:center;line-height:1.4}
+.dl-card.primary .dl-card-icon{background:var(--accent)}
+.dl-card.primary .dl-card-icon svg{color:var(--bg)}
+.dl-card.primary{border-color:var(--accent)}
+
+/* browser store cards */
+.store-cards{
+  display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;
+}
+.store-card{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px;background:var(--panel);
+  border:1px solid var(--border);border-radius:8px;
+  font-size:12px;font-weight:500;color:var(--text-mid);
+  transition:all .13s;cursor:pointer;
+}
+.store-card:hover{border-color:#aaa;color:var(--text);background:var(--btn-hover)}
+.store-card img{width:20px;height:20px;object-fit:contain;flex-shrink:0;}
+.store-card-name{font-size:11px;color:var(--text-dim);margin-top:0}
+
+/* ── ENGINES ── */
+.engines-label{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
+.engines{display:flex;justify-content:center;gap:18px;align-items:center;flex-wrap:wrap}
+.engine-chip{
+  display:flex;align-items:center;gap:6px;padding:5px 12px;
+  background:var(--btn);border:1px solid var(--border);border-radius:6px;
+  font-size:11.5px;color:var(--text-mid);transition:all .13s;
+}
+.engine-chip:hover{border-color:#aaa;color:var(--text)}
+.engine-chip img{height:16px;width:16px;object-fit:contain;border-radius:3px;}
+
+/* ── PANELS ── */
+.panel{display:none;max-width:860px;margin:0 auto;padding:32px 28px 64px;animation:fadeIn .2s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTION HEADINGS ── */
+.section-tag{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px}
+.section-title{font-size:20px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px}
+.section-desc{font-size:13.5px;color:var(--text-mid);line-height:1.6;margin-bottom:20px;max-width:600px}
+.subsection{margin-top:28px}
+.sub-title{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.sub-title img{width:18px;height:18px;object-fit:contain;flex-shrink:0}
+.sub-title svg{width:15px;height:15px;color:var(--text-mid);flex-shrink:0}
+
+/* ── CARDS ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin-top:4px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:14px 15px;transition:all .13s;}
+.card:hover{border-color:#aaa;box-shadow:0 3px 12px rgba(0,0,0,.07)}
+.card-icon{width:28px;height:28px;margin-bottom:8px;color:var(--text-mid)}
+.card-icon svg{width:100%;height:100%}
+.card-title{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:3px}
+.card-desc{font-size:11.5px;color:var(--text-mid);line-height:1.5}
+
+/* ── STEPS ── */
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--border);}
+.step:last-child{border-bottom:none}
+.step-num{
+  width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--bg);
+  font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px;
+}
+.step-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.step-desc{font-size:12.5px;color:var(--text-mid);line-height:1.55}
+code{
+  font-family:"SF Mono","Fira Mono",monospace;font-size:11.5px;
+  background:var(--btn);border:1px solid var(--border);border-radius:4px;padding:1px 5px;color:var(--text);
+}
+
+/* ── CALLOUTS ── */
+.callout{display:flex;gap:10px;align-items:flex-start;padding:11px 13px;border-radius:7px;margin:14px 0;font-size:12.5px;line-height:1.55;}
+.callout-icon{flex-shrink:0;font-size:14px;margin-top:1px}
+.callout p{margin:0;color:inherit}
+.callout.tip{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+.callout.warn{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+.callout.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+body.dark .callout.tip{background:#052e16;border-color:#166534;color:#4ade80}
+body.dark .callout.warn{background:#1c1000;border-color:#854d0e;color:#fcd34d}
+body.dark .callout.info{background:#0c1a35;border-color:#1d4ed8;color:#93c5fd}
+
+/* ── KBD TABLE ── */
+.kbd-table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:7px;overflow:hidden;margin-top:4px}
+.kbd-table th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-dim);text-align:left;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--border);}
+.kbd-table td{font-size:12.5px;color:var(--text-mid);padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.kbd-table tr:last-child td{border-bottom:none}
+.kbd-table tr:hover td{background:var(--btn)}
+.kbdg{display:flex;gap:3px;align-items:center;flex-wrap:wrap}
+kbd{font-family:"SF Mono","Fira Mono",monospace;font-size:10px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-bottom:2px solid var(--border);border-radius:4px;padding:2px 6px;min-width:18px;text-align:center;display:inline-block;}
+
+/* ── FAQ ── */
+.faq-item{border:1px solid var(--border);border-radius:7px;overflow:hidden;margin-bottom:7px;background:var(--panel)}
+.faq-q{width:100%;text-align:left;background:none;border:none;display:flex;align-items:center;justify-content:space-between;padding:12px 15px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;color:var(--text);transition:background .13s;}
+.faq-q:hover{background:var(--btn)}
+.faq-arrow{width:18px;height:18px;border-radius:4px;background:var(--btn);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .18s;}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .22s ease,padding .22s ease;font-size:12.5px;color:var(--text-mid);line-height:1.6;padding:0 15px;}
+.faq-item.open .faq-a{max-height:260px;padding:0 15px 13px}
+
+/* ── CHANGELOG ── */
+.changelog-item{background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:14px 16px;margin-bottom:9px;}
+.cl-header{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.cl-ver{font-family:"SF Mono","Fira Mono",monospace;font-size:13px;font-weight:600}
+.cl-date{font-size:11px;color:var(--text-dim)}
+.cl-badge{margin-left:auto;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid var(--border);color:var(--text-mid);background:var(--btn);}
+.cl-badge.new{color:#16a34a;border-color:#bbf7d0;background:#f0fdf4}
+body.dark .cl-badge.new{color:#4ade80;border-color:#166534;background:#052e16}
+.cl-change{display:flex;gap:8px;align-items:baseline;font-size:12px;color:var(--text-mid);padding:2px 0;}
+.cl-tag{font-family:"SF Mono","Fira Mono",monospace;font-size:10.5px;font-weight:600;padding:1px 5px;border-radius:3px;flex-shrink:0;}
+.cl-tag.add{color:#16a34a;background:#f0fdf4}
+.cl-tag.fix{color:#1e40af;background:#eff6ff}
+.cl-tag.chg{color:#92400e;background:#fffbeb}
+.cl-tag.rmv{color:#6b21a8;background:#faf5ff}
+body.dark .cl-tag.add{color:#4ade80;background:#052e16}
+body.dark .cl-tag.fix{color:#93c5fd;background:#0c1a35}
+body.dark .cl-tag.chg{color:#fcd34d;background:#1c1000}
+body.dark .cl-tag.rmv{color:#c084fc;background:#1a0533}
+
+/* ── BROWSER CHIPS (docs tab) ── */
+.browser-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.browser-chip{display:flex;align-items:center;gap:8px;padding:8px 13px;background:var(--panel);border:1px solid var(--border);border-radius:7px;font-size:12.5px;color:var(--text-mid);font-weight:500;transition:all .13s;}
+.browser-chip:hover{border-color:#aaa;color:var(--text)}
+.browser-chip img{width:20px;height:20px;object-fit:contain;flex-shrink:0;}
+
+/* ── FEAT LIST ── */
+.feat-list{list-style:none;display:flex;flex-direction:column;gap:5px;margin:4px 0}
+.feat-list li{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--text-mid);padding:8px 11px;background:var(--panel);border:1px solid var(--border);border-radius:6px;}
+.feat-list li::before{content:'→';font-size:11px;color:var(--text-dim);flex-shrink:0;margin-top:2px;}
+.feat-list strong{color:var(--text)}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:26px 0}
+
+/* ── FOOTER ── */
+.footer{text-align:center;font-size:11px;color:var(--text-dim);padding:20px;border-top:1px solid var(--border);}
+.footer a{color:var(--text-mid);}
+.footer a:hover{color:var(--text)}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:22px;width:340px;box-shadow:0 8px 32px rgba(0,0,0,.18);animation:fadeIn .15s ease;}
+.modal-title{font-size:15px;font-weight:700;margin-bottom:5px}
+.modal-sub{font-size:12.5px;color:var(--text-mid);margin-bottom:18px;line-height:1.5}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:18px;line-height:1;padding:2px;}
+.modal-close:hover{color:var(--text)}
+.modal-wrap{position:relative}
+</style>
+</head>
+<body>
+
+<!-- DOWNLOAD MODAL (ZIP) -->
+<div class="modal-overlay" id="zipModal">
+  <div class="modal modal-wrap">
+    <button class="modal-close" onclick="closeModal('zipModal')">×</button>
+    <div class="modal-title" data-i18n="modal_zip_title">Download .zip</div>
+    <div class="modal-sub" data-i18n="modal_zip_sub">Extract and load as unpacked extension in your browser's developer settings.</div>
+    <a href="Toilet_Finder.zip" download class="btn" style="width:100%;justify-content:center;height:36px;font-size:12.5px;font-weight:600;background:var(--accent);color:var(--bg);border-color:var(--accent);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span data-i18n="dl_zip_btn">Download Toilet_Finder.zip</span>
+    </a>
+  </div>
+</div>
+
+<!-- DOWNLOAD MODAL (Browser store) -->
+<div class="modal-overlay" id="storeModal">
+  <div class="modal modal-wrap">
+    <button class="modal-close" onclick="closeModal('storeModal')">×</button>
+    <div class="modal-title" data-i18n="modal_store_title">Install from store</div>
+    <div class="modal-sub" data-i18n="modal_store_sub">Choose your browser to open the extension store page.</div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <a href="#" class="store-card" style="text-decoration:none">
+        <img src="chrome.png" alt="Chrome">
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text)">Chrome Web Store</div>
+          <div class="store-card-name" data-i18n="store_chrome_note">Chrome & Brave</div>
+        </div>
+      </a>
+      <a href="#" class="store-card" style="text-decoration:none">
+        <img src="firefox.png" alt="Firefox">
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text)">Firefox Add-ons</div>
+          <div class="store-card-name" data-i18n="store_ff_note">Mozilla Firefox</div>
+        </div>
+      </a>
+      <a href="#" class="store-card" style="text-decoration:none">
+        <img src="edge.png" alt="Edge">
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text)">Microsoft Edge Add-ons</div>
+          <div class="store-card-name" data-i18n="store_edge_note">Microsoft Edge</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo-area">
+    <div>
+      <div class="logo-text">Toilet Finder</div>
+      <div class="logo-ver">v1.10 · Docs</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="btn mode-btn" onclick="toggleDark()">
+      <svg id="moonIcon" viewBox="0 0 24 24" fill="none"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z" stroke="currentColor" stroke-width="2"/></svg>
+      <svg id="sunIcon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/><path stroke="currentColor" stroke-width="2" d="M12 1v3M12 20v3M1 12h3M20 12h3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+    </button>
+    <select class="btn" id="languageSelect" onchange="setLanguage(this.value)">
+      <option value="en">English</option>
+      <option value="es">Español</option>
+      <option value="fr">Français</option>
+      <option value="de">Deutsch</option>
+      <option value="pt">Português</option>
+    </select>
+    <a href="https://discord.gg/" target="_blank" class="btn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.04.033.05a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Discord
+    </a>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="tab active" data-tab="docs" data-i18n="nav_docs">Documentation</button>
+  <button class="tab" data-tab="install" data-i18n="nav_install">Installation</button>
+  <button class="tab" data-tab="features" data-i18n="nav_features">Features</button>
+  <button class="tab" data-tab="shortcuts" data-i18n="nav_shortcuts">Shortcuts</button>
+  <button class="tab" data-tab="help" data-i18n="nav_help">Help & FAQ</button>
+  <button class="tab" data-tab="changelog" data-i18n="nav_changes">Changelog</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow" data-i18n="hero_eyebrow">Browser Extension</div>
+  <h1 class="hero-title">
+    <img src="logo.png" class="hero-logo" onerror="this.style.display='none'">
+    Toilet Finder
+  </h1>
+  <p class="hero-desc" data-i18n="hero_desc">Find PDF, EPUB and MOBI files across the web — fast, private, and without friction.</p>
+  <div class="hero-badges">
+    <span class="hbadge live" data-i18n="badge_stable">✓ v1.10 stable</span>
+    <span class="hbadge" data-i18n="badge_formats">PDF · EPUB · MOBI</span>
+    <span class="hbadge" data-i18n="badge_langs">9 languages</span>
+    <span class="hbadge" data-i18n="badge_private">No data collected</span>
+  </div>
+
+  <!-- DOWNLOAD BUTTONS -->
+  <div class="download-section">
+    <div class="dl-card primary" onclick="openModal('zipModal')">
+      <div class="dl-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </div>
+      <div class="dl-card-title" data-i18n="dl_zip_title">Download .zip</div>
+      <div class="dl-card-sub" data-i18n="dl_zip_sub">Manual install · All browsers</div>
+    </div>
+    <div class="dl-card" onclick="openModal('storeModal')">
+      <div class="dl-card-icon" style="background:var(--btn);position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:6px;border-radius:10px;">
+        <img src="chrome.png" style="width:18px;height:18px;object-fit:contain;">
+        <img src="firefox.png" style="width:18px;height:18px;object-fit:contain;">
+        <img src="edge.png" style="width:18px;height:18px;object-fit:contain;">
+        <img src="brave.png" style="width:18px;height:18px;object-fit:contain;">
+      </div>
+      <div class="dl-card-title" data-i18n="dl_store_title">Browser Store</div>
+      <div class="dl-card-sub" data-i18n="dl_store_sub">One-click install · Auto-updates</div>
+    </div>
+  </div>
+
+  <!-- ENGINES -->
+  <div class="engines-label" data-i18n="engines_label">Compatible search engines</div>
+  <div class="engines">
+    <a class="engine-chip" href="https://google.com" target="_blank">Google</a>
+    <a class="engine-chip" href="https://bing.com" target="_blank">Bing</a>
+    <a class="engine-chip" href="https://duckduckgo.com" target="_blank">DuckDuckGo</a>
+    <a class="engine-chip" href="https://search.brave.com" target="_blank">Brave</a>
+  </div>
+</section>
+
+<!-- ═══ DOCS ═══ -->
+<div class="panel active" id="docs">
+  <div class="section-tag" data-i18n="docs_tag">Overview</div>
+  <div class="section-title" data-i18n="docs_title">What is Toilet Finder?</div>
+  <p class="section-desc" data-i18n="docs_desc">A browser extension that automates ebook and document searches. Instead of typing <code>filetype:pdf</code> every time, the extension does it for you — with format filters, engine selection, history, favorites, and live previews.</p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+      <div class="card-title" data-i18n="card1_title">Smart search</div>
+      <div class="card-desc" data-i18n="card1_desc">Appends filetype operators automatically.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+      <div class="card-title" data-i18n="card2_title">Multi-format</div>
+      <div class="card-desc" data-i18n="card2_desc">Filter by PDF, EPUB, or MOBI — or all three at once.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <div class="card-title" data-i18n="card3_title">History & Favorites</div>
+      <div class="card-desc" data-i18n="card3_desc">Every search saved locally. Star your best ones.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+      <div class="card-title" data-i18n="card4_title">Multi-engine</div>
+      <div class="card-desc" data-i18n="card4_desc">Google, Bing, DuckDuckGo, Brave — or custom URL.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div class="card-title" data-i18n="card5_title">Live preview</div>
+      <div class="card-desc" data-i18n="card5_desc">Inline preview as you type via DuckDuckGo API.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div class="card-title" data-i18n="card6_title">Author Search</div>
+      <div class="card-desc" data-i18n="card6_desc">Separate title and author fields for precise results.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      <div class="card-title" data-i18n="card8_title">Smart Favorites</div>
+      <div class="card-desc" data-i18n="card8_desc">Label, sort and re-launch saved searches instantly.</div>
+    </div>
+    <div class="card" style="border-style:dashed;opacity:.7">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      <div class="card-title" data-i18n="card7_title">Made with Love</div>
+      <div class="card-desc" data-i18n="card7_desc">Built entirely with heart. ❤️</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-tag" data-i18n="browsers_tag">Compatibility</div>
+  <div class="section-title" data-i18n="browsers_title">Supported browsers</div>
+  <div class="browser-row" style="margin-top:12px">
+    <div class="browser-chip"><img src="chrome.png" alt="Chrome">Chrome 88+</div>
+    <div class="browser-chip"><img src="firefox.png" alt="Firefox">Firefox 89+</div>
+    <div class="browser-chip"><img src="edge.png" alt="Edge">Edge 88+</div>
+    <div class="browser-chip"><img src="brave.png" alt="Brave">Brave 1.20+</div>
+  </div>
+</div>
+
+<!-- ═══ INSTALL ═══ -->
+<div class="panel" id="install">
+  <div class="section-tag" data-i18n="install_tag">Setup</div>
+  <div class="section-title" data-i18n="install_title">Installation</div>
+  <p class="section-desc" data-i18n="install_desc">Two ways to install. Choose what works best for you.</p>
+
+  <!-- Download choice -->
+  <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap">
+    <div class="dl-card primary" style="flex:1;min-width:160px" onclick="openModal('zipModal')">
+      <div class="dl-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </div>
+      <div class="dl-card-title" data-i18n="dl_zip_title">Download .zip</div>
+      <div class="dl-card-sub" data-i18n="dl_zip_sub">Manual install · All browsers</div>
+    </div>
+    <div class="dl-card" style="flex:1;min-width:160px" onclick="openModal('storeModal')">
+      <div class="dl-card-icon" style="background:var(--btn);display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:6px;border-radius:10px;width:44px;height:44px;">
+        <img src="chrome.png" style="width:18px;height:18px;object-fit:contain;">
+        <img src="firefox.png" style="width:18px;height:18px;object-fit:contain;">
+        <img src="edge.png" style="width:18px;height:18px;object-fit:contain;">
+        <img src="brave.png" style="width:18px;height:18px;object-fit:contain;">
+      </div>
+      <div class="dl-card-title" data-i18n="dl_store_title">Browser Store</div>
+      <div class="dl-card-sub" data-i18n="dl_store_sub">One-click install · Auto-updates</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">ℹ️</span>
+    <p data-i18n="install_note">Manifest V2 extension. Chrome, Edge and Brave require Developer Mode. Firefox uses <code>about:debugging</code> for temporary installs.</p>
+  </div>
+
+  <div class="subsection">
+    <div class="sub-title">
+      <img src="firefox.png" alt="Firefox">Firefox
+    </div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div><div class="step-title" data-i18n="ff1_t">Download the .zip</div><div class="step-desc" data-i18n="ff1_d">Get <code>pem-search.zip</code> and extract it to any folder.</div></div></div>
+      <div class="step"><div class="step-num">2</div><div><div class="step-title" data-i18n="ff2_t">Open about:debugging</div><div class="step-desc" data-i18n="ff2_d">Type <code>about:debugging#/runtime/this-firefox</code> in the address bar.</div></div></div>
+      <div class="step"><div class="step-num">3</div><div><div class="step-title" data-i18n="ff3_t">Load temporary add-on</div><div class="step-desc" data-i18n="ff3_d">Click <strong>Load Temporary Add-on</strong> and select <code>manifest.json</code>.</div></div></div>
+      <div class="step"><div class="step-num">4</div><div><div class="step-title" data-i18n="ff4_t">Done</div><div class="step-desc" data-i18n="ff4_d">The icon appears in your toolbar. Click it to start searching.</div></div></div>
+    </div>
+    <div class="callout warn" style="margin-top:12px">
+      <span class="callout-icon">⚠️</span>
+      <p data-i18n="firefox_warn">Temporary extensions are removed when Firefox restarts. Reload via <code>about:debugging</code> each session.</p>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="sub-title" style="display:flex;gap:7px;flex-wrap:wrap">
+      <img src="chrome.png" alt="Chrome" style="width:18px;height:18px;object-fit:contain">
+      <img src="edge.png" alt="Edge" style="width:18px;height:18px;object-fit:contain">
+      <img src="brave.png" alt="Brave" style="width:18px;height:18px;object-fit:contain">
+      Chrome / Edge / Brave
+    </div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div><div class="step-title" data-i18n="ch1_t">Enable Developer Mode</div><div class="step-desc" data-i18n="ch1_d">Go to <code>chrome://extensions</code> and toggle <strong>Developer mode</strong> on.</div></div></div>
+      <div class="step"><div class="step-num">2</div><div><div class="step-title" data-i18n="ch2_t">Load unpacked</div><div class="step-desc" data-i18n="ch2_d">Click <strong>Load unpacked</strong> and select the folder with <code>manifest.json</code>.</div></div></div>
+      <div class="step"><div class="step-num">3</div><div><div class="step-title" data-i18n="ch3_t">Pin to toolbar</div><div class="step-desc" data-i18n="ch3_d">Click the puzzle icon and pin Toilet Finder for easy access.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FEATURES ═══ -->
+<div class="panel" id="features">
+  <div class="section-tag" data-i18n="feat_tag">How it works</div>
+  <div class="section-title" data-i18n="feat_title">Features</div>
+  <p class="section-desc" data-i18n="feat_desc">Everything inside the extension explained.</p>
+
+  <div class="subsection">
+    <div class="sub-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span data-i18n="feat_search">Search</span></div>
+    <p style="color:var(--text-mid);font-size:13px;line-height:1.6;margin-bottom:10px" data-i18n="feat_search_desc">Type a title or author, choose a format, press Enter. The extension builds the query:</p>
+    <div style="background:var(--btn);border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-family:'SF Mono','Fira Mono',monospace;font-size:12px;color:var(--text-mid);line-height:1.7">
+      Clean Code Robert Martin <span style="opacity:.5">filetype:pdf OR filetype:epub OR filetype:mobi</span>
+    </div>
+    <div class="callout tip" style="margin-top:12px"><span class="callout-icon">💡</span><p data-i18n="search_tip">Include the author's name for better results. <code>atomic habits james clear</code> beats just <code>atomic habits</code>.</p></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="subsection">
+    <div class="sub-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span data-i18n="feat_filters">Filters</span></div>
+    <ul class="feat-list">
+      <li><span><strong data-i18n="filter_all">All</strong> — <span data-i18n="filter_all_desc">searches PDF + EPUB + MOBI simultaneously.</span></span></li>
+      <li><span><strong>PDF</strong> — <span data-i18n="filter_pdf_desc">best for textbooks, papers, manuals.</span></span></li>
+      <li><span><strong>EPUB</strong> — <span data-i18n="filter_epub_desc">best for novels and ebooks with reflow layout.</span></span></li>
+      <li><span><strong>MOBI</strong> — <span data-i18n="filter_mobi_desc">older Kindle-compatible format.</span></span></li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+  <div class="subsection">
+    <div class="sub-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span data-i18n="feat_history">History</span></div>
+    <ul class="feat-list">
+      <li><span data-i18n="hist1"><strong>Click any entry</strong> to restore the query and filter instantly.</span></li>
+      <li><span data-i18n="hist2"><strong>★ Star</strong> saves to Favorites. Click again to remove.</span></li>
+      <li><span data-i18n="hist3"><strong>×</strong> deletes that entry.</span></li>
+      <li><span data-i18n="hist4"><strong>Clear all</strong> shows a confirmation modal first.</span></li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+  <div class="subsection">
+    <div class="sub-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span data-i18n="feat_favorites">Favorites</span></div>
+    <ul class="feat-list">
+      <li><span data-i18n="fav1">Add with ★ from history. Up to 50 items.</span></li>
+      <li><span data-i18n="fav2">Click any favorite to re-run that search instantly.</span></li>
+      <li><span data-i18n="fav3">Never auto-deleted, unlike history.</span></li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+  <div class="subsection">
+    <div class="sub-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span data-i18n="feat_preview">Preview</span></div>
+    <p style="color:var(--text-mid);font-size:13px;line-height:1.6;margin-bottom:10px" data-i18n="preview_desc">As you type (3+ chars), an inline panel shows title, URL and description via DuckDuckGo Instant Answer API.</p>
+    <div class="callout warn"><span class="callout-icon">⚠️</span><p data-i18n="preview_warn">Works best for popular books. Obscure titles may return nothing — expected behavior.</p></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="subsection">
+    <div class="sub-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span data-i18n="feat_author">Author field</span></div>
+    <p style="color:var(--text-mid);font-size:13px;line-height:1.6;margin-bottom:10px" data-i18n="feat_author_desc">Click <strong>Search by author</strong> below the format filters to reveal a dedicated author field. The extension builds precise operator queries:</p>
+    <div style="background:var(--btn);border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-family:'SF Mono','Fira Mono',monospace;font-size:12px;color:var(--text-mid);line-height:1.7">
+      Clean Code <span style="opacity:.5">intitle:"Robert Martin" OR inurl:"Robert Martin"</span> <span style="opacity:.5">filetype:pdf</span>
+    </div>
+    <div class="callout tip" style="margin-top:12px"><span class="callout-icon">💡</span><p data-i18n="author_tip">The extension also detects author names in your query automatically and offers to move them to the author field.</p></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="subsection">
+    <div class="sub-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span data-i18n="feat_smart">Smart features</span></div>
+    <ul class="feat-list">
+      <li><span data-i18n="smart1"><strong>Stopword removal</strong> — words like <code>pdf</code>, <code>download</code>, <code>free</code>, <code>ebook</code> are stripped before search.</span></li>
+      <li><span data-i18n="smart2"><strong>ISBN detection</strong> — paste a 10 or 13-digit ISBN and get direct buttons to Anna's Archive, LibGen, and Open Library.</span></li>
+      <li><span data-i18n="smart3"><strong>Context menu</strong> — right-click any selected text and choose "Search in Toilet Finder" to open it instantly.</span></li>
+      <li><span data-i18n="smart4"><strong>Paste-to-search</strong> — paste into an empty field and the search fires automatically after 800ms.</span></li>
+      <li><span data-i18n="smart5"><strong>Word counter</strong> — a live count shows query length; turns yellow at 6 words, red at 8.</span></li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+  <div class="subsection">
+    <div class="sub-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span data-i18n="feat_favorites2">Favorites</span></div>
+    <ul class="feat-list">
+      <li><span data-i18n="fav1">Add with ★ from history. Up to 50 items.</span></li>
+      <li><span data-i18n="fav_label">Label each favorite: <strong>📖 Reading</strong>, <strong>✅ Downloaded</strong>, or <strong>🔍 Pending</strong>.</span></li>
+      <li><span data-i18n="fav_sort">Sort by save date or alphabetically with the A↕Z toggle.</span></li>
+      <li><span data-i18n="fav_relaunch">Click ↗ in history to re-launch a search instantly without entering the field.</span></li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+  <div class="subsection">
+    <div class="sub-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span data-i18n="feat_dev">Developer mode</span></div>
+    <p style="color:var(--text-mid);font-size:13px;line-height:1.6;margin-bottom:10px" data-i18n="dev_desc">Enable in Settings to reveal the Custom URL field. The extension appends the encoded query after your URL.</p>
+    <div style="background:var(--btn);border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-family:'SF Mono','Fira Mono',monospace;font-size:12px;color:var(--text-mid);line-height:1.8">
+      <span style="opacity:.5"># Custom SearXNG instance</span><br>
+      https://search.myserver.com/?q=<br><br>
+      <span style="opacity:.5"># Result:</span><br>
+      https://search.myserver.com/?q=clean%20code%20filetype%3Apdf
+    </div>
+    <div class="callout warn" style="margin-top:12px"><span class="callout-icon">⚠️</span><p data-i18n="dev_warn">Saving a custom URL deactivates preset engines. Click any preset to switch back.</p></div>
+  </div>
+</div>
+
+<!-- ═══ SHORTCUTS ═══ -->
+<div class="panel" id="shortcuts">
+  <div class="section-tag" data-i18n="sc_tag">Keyboard</div>
+  <div class="section-title" data-i18n="sc_title">Shortcuts</div>
+  <p class="section-desc" data-i18n="sc_desc">Active only when the popup is open. Designed to avoid browser conflicts.</p>
+  <table class="kbd-table">
+    <thead><tr><th data-i18n="sc_col_action">Action</th><th data-i18n="sc_col_shortcut">Shortcut</th></tr></thead>
+    <tbody>
+      <tr><td data-i18n="sc_run">Run search</td><td><div class="kbdg"><kbd>Enter</kbd></div></td></tr>
+      <tr><td data-i18n="sc_focus">Focus search input</td><td><div class="kbdg"><kbd>Ctrl</kbd><kbd>K</kbd></div></td></tr>
+      <tr><td data-i18n="sc_tab1">Switch to Search tab</td><td><div class="kbdg"><kbd>Ctrl</kbd><kbd>1</kbd></div></td></tr>
+      <tr><td data-i18n="sc_tab2">Switch to History tab</td><td><div class="kbdg"><kbd>Ctrl</kbd><kbd>2</kbd></div></td></tr>
+      <tr><td data-i18n="sc_tab3">Switch to Favorites tab</td><td><div class="kbdg"><kbd>Ctrl</kbd><kbd>3</kbd></div></td></tr>
+      <tr><td data-i18n="sc_tab4">Switch to Settings tab</td><td><div class="kbdg"><kbd>Ctrl</kbd><kbd>4</kbd></div></td></tr>
+      <tr><td data-i18n="sc_filter">Cycle format filter</td><td><div class="kbdg"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>F</kbd></div></td></tr>
+      <tr><td data-i18n="sc_copy">Copy query to clipboard</td><td><div class="kbdg"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>C</kbd></div></td></tr>
+      <tr><td data-i18n="sc_author">Toggle author field</td><td><div class="kbdg"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>A</kbd></div></td></tr>
+      <tr><td data-i18n="sc_compact">Toggle compact mode</td><td><div class="kbdg"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>M</kbd></div></td></tr>
+      <tr><td data-i18n="sc_close">Close popup / clear field</td><td><div class="kbdg"><kbd>Esc</kbd></div></td></tr>
+    </tbody>
+  </table>
+  <div class="callout tip" style="margin-top:16px"><span class="callout-icon">💡</span><p data-i18n="sc_tip">A flash notification confirms each shortcut action at the bottom of the popup.</p></div>
+</div>
+
+<!-- ═══ HELP ═══ -->
+<div class="panel" id="help">
+  <div class="section-tag" data-i18n="faq_tag">Support</div>
+  <div class="section-title" data-i18n="faq_title">Help & FAQ</div>
+  <p class="section-desc" data-i18n="faq_desc">Common questions about installing and using the extension.</p>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq1_q">Why does the extension disappear after restarting Firefox?</span><span class="faq-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span></button>
+    <div class="faq-a" data-i18n="faq1_a">Firefox only keeps temporary add-ons for the current session. Reload via about:debugging → Load Temporary Add-on each restart.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq2_q">The preview never shows anything. Is it broken?</span><span class="faq-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span></button>
+    <div class="faq-a" data-i18n="faq2_a">The preview uses DuckDuckGo's Instant Answer API — works for popular books and authors. For obscure titles it returns nothing and hides automatically. Expected behavior.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq3_q">Does the extension collect any data?</span><span class="faq-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span></button>
+    <div class="faq-a" data-i18n="faq3_a">No. History, favorites, and settings are stored locally via browser.storage.local. Nothing leaves your device except the search queries you choose to open.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq4_q">The accent color doesn't work in dark mode.</span><span class="faq-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span></button>
+    <div class="faq-a" data-i18n="faq4_a">Intentional. Dark mode uses a fixed neutral palette. Your accent is saved and applied when you switch back to light mode.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq5_q">Can I change the extension logo?</span><span class="faq-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span></button>
+    <div class="faq-a" data-i18n="faq5_a">Yes. Replace icons/logo.png with your image (64×64 PNG recommended). For the toolbar icon, replace icons/icon48.png.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq6_q">How do I reset everything?</span><span class="faq-arrow"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span></button>
+    <div class="faq-a" data-i18n="faq6_a">Clear history from the History tab and favorites from the Favorites tab. To reset all settings, clear extension storage from your browser's extension management page.</div>
+  </div>
+</div>
+
+<!-- ═══ CHANGELOG ═══ -->
+<div class="panel" id="changelog">
+  <div class="section-tag" data-i18n="cl_tag">Version history</div>
+  <div class="section-title" data-i18n="cl_title">Changelog</div>
+  <p class="section-desc" data-i18n="cl_desc">A record of every update.</p>
+
+  <div class="changelog-item">
+    <div class="cl-header"><span class="cl-ver">v1.10</span><span class="cl-date">2026</span><span class="cl-badge new" data-i18n="cl_latest">Latest</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl107_1">Browser logos in compatibility pills</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl107_2">Discord button in header</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl107_3">Settings redesigned with icon sections</span></div>
+    <div class="cl-change"><span class="cl-tag fix">FIX</span><span data-i18n="cl107_4">Accent color only applies in light mode</span></div>
+    <div class="cl-change"><span class="cl-tag rmv">RMV</span><span data-i18n="cl_herobrine">Herobrine has been removed</span></div>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header"><span class="cl-ver">v1.06</span><span class="cl-date">2026</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl106_1">Accent color picker (8 swatches)</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl106_2">Developer mode with custom search URL</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl106_3">Keyboard shortcuts (Ctrl+K, Ctrl+1–4, Ctrl+Shift+F)</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl106_4">Confirm modal before clearing history</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl106_5">Inline preview via DuckDuckGo API</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl106_6">Favorites tab (up to 50 entries)</span></div>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header"><span class="cl-ver">v1.05</span><span class="cl-date">2026</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl105_1">9-language interface translation</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl105_2">Search history (30 entries)</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl105_3">Dark mode toggle</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl105_4">4 search engine presets</span></div>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header"><span class="cl-ver">v1.01</span><span class="cl-date">2026</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl101_1">Initial release</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl101_2">PDF / EPUB / MOBI format filters</span></div>
+    <div class="cl-change"><span class="cl-tag add">ADD</span><span data-i18n="cl101_3">Search with Enter key</span></div>
+  </div>
+</div>
+
+<footer class="footer">
+  Toilet Finder · Browser Extension · 2026
+</footer>
+
+<script>
+const T={
+  en:{
+    nav_docs:"Documentation",nav_install:"Installation",nav_features:"Features",
+    nav_shortcuts:"Shortcuts",nav_help:"Help & FAQ",nav_changes:"Changelog",
+    hero_eyebrow:"Browser Extension",
+    hero_desc:"Find PDF, EPUB and MOBI files across the web — fast, private, and without friction.",
+    badge_stable:"✓ v1.10 stable",badge_formats:"PDF · EPUB · MOBI",badge_langs:"9 languages",badge_private:"No data collected",
+    engines_label:"Compatible search engines",
+    dl_zip_title:"Download .zip",dl_zip_sub:"Manual install · All browsers",
+    dl_store_title:"Browser Store",dl_store_sub:"One-click install · Auto-updates",
+    modal_zip_title:"Download .zip",modal_zip_sub:"Extract and load as unpacked extension in your browser's developer settings.",
+    dl_zip_btn:"Download Toilet_Finder.zip",
+    modal_store_title:"Install from store",modal_store_sub:"Choose your browser to open the extension store.",
+    store_chrome_note:"Chrome & Brave",store_ff_note:"Mozilla Firefox",store_edge_note:"Microsoft Edge",
+    docs_tag:"Overview",docs_title:"What is Toilet Finder?",
+    docs_desc:"A browser extension that automates ebook searches. Instead of typing filetype:pdf every time, the extension does it for you.",
+    card1_title:"Smart search",card1_desc:"Appends filetype operators automatically.",
+    card2_title:"Multi-format",card2_desc:"Filter by PDF, EPUB, or MOBI — or all three.",
+    card3_title:"History & Favorites",card3_desc:"Every search saved locally. Star your best ones.",
+    card4_title:"Multi-engine",card4_desc:"Google, Bing, DuckDuckGo, Brave — or custom URL.",
+    card5_title:"Live preview",card5_desc:"Inline preview as you type via DuckDuckGo API.",
+    card6_title:"Author Search",card6_desc:"Separate title and author fields for precise results.",
+    browsers_tag:"Compatibility",browsers_title:"Supported browsers",
+    install_tag:"Setup",install_title:"Installation",install_desc:"Two ways to install. Choose what works best for you.",
+    install_note:"Manifest V2. Chrome, Edge and Brave require Developer Mode. Firefox uses about:debugging.",
+    ff1_t:"Download the .zip",ff1_d:"Get pem-search.zip and extract it to any folder.",
+    ff2_t:"Open about:debugging",ff2_d:"Type about:debugging#/runtime/this-firefox in the address bar.",
+    ff3_t:"Load temporary add-on",ff3_d:"Click Load Temporary Add-on and select manifest.json.",
+    ff4_t:"Done",ff4_d:"The icon appears in your toolbar. Click it to start searching.",
+    firefox_warn:"Temporary extensions are removed when Firefox restarts. Reload each session.",
+    ch1_t:"Enable Developer Mode",ch1_d:"Go to chrome://extensions and toggle Developer mode on.",
+    ch2_t:"Load unpacked",ch2_d:"Click Load unpacked and select the folder with manifest.json.",
+    ch3_t:"Pin to toolbar",ch3_d:"Click the puzzle icon and pin Toilet Finder.",
+    feat_tag:"How it works",feat_title:"Features",feat_desc:"Everything inside the extension explained.",
+    feat_search:"Search",feat_search_desc:"Type a title or author, choose a format, press Enter. Query built automatically:",
+    search_tip:"Include the author's name for better results.",
+    feat_filters:"Filters",filter_all:"All",filter_all_desc:"searches PDF + EPUB + MOBI simultaneously.",
+    filter_pdf_desc:"best for textbooks, papers, manuals.",filter_epub_desc:"best for novels and ebooks.",filter_mobi_desc:"older Kindle-compatible format.",
+    feat_history:"History",hist1:"Click any entry to restore the query and filter instantly.",
+    hist2:"★ Star saves to Favorites. Click again to remove.",hist3:"× deletes that entry.",hist4:"Clear all shows a confirmation modal first.",
+    feat_favorites:"Favorites",fav1:"Add with ★ from history. Up to 50 items.",fav2:"Click any favorite to re-run that search.",fav3:"Never auto-deleted, unlike history.",
+    feat_preview:"Preview",preview_desc:"As you type (3+ chars), an inline panel shows title, URL and description.",preview_warn:"Works best for popular books. Obscure titles may return nothing.",
+    feat_dev:"Developer mode",dev_desc:"Enable in Settings to reveal the Custom URL field.",dev_warn:"Saving a custom URL deactivates preset engines. Click any preset to switch back.",
+    sc_tag:"Keyboard",sc_title:"Shortcuts",sc_desc:"Active only when the popup is open. Designed to avoid browser conflicts.",
+    sc_col_action:"Action",sc_col_shortcut:"Shortcut",
+    sc_run:"Run search",sc_focus:"Focus search input",sc_tab1:"Switch to Search tab",sc_tab2:"Switch to History tab",
+    sc_tab3:"Switch to Favorites tab",sc_tab4:"Switch to Settings tab",sc_filter:"Cycle format filter",sc_close:"Close popup / dismiss modal",
+    sc_tip:"A flash notification confirms each shortcut action.",
+    faq_tag:"Support",faq_title:"Help & FAQ",faq_desc:"Common questions about installing and using the extension.",
+    faq1_q:"Why does the extension disappear after restarting Firefox?",
+    faq1_a:"Firefox only keeps temporary add-ons for the current session. Reload via about:debugging each restart.",
+    faq2_q:"The preview never shows anything. Is it broken?",
+    faq2_a:"The preview uses DuckDuckGo's Instant Answer API. For obscure titles it returns nothing — expected behavior.",
+    faq3_q:"Does the extension collect any data?",
+    faq3_a:"No. Everything is stored locally via browser.storage.local. Nothing leaves your device.",
+    faq4_q:"The accent color doesn't work in dark mode.",
+    faq4_a:"Intentional. Dark mode uses a fixed neutral palette. Your accent applies in light mode.",
+    faq5_q:"Can I change the extension logo?",faq5_a:"Yes. Replace icons/logo.png (64×64 PNG recommended).",
+    faq6_q:"How do I reset everything?",faq6_a:"Clear history and favorites from their tabs. For settings, clear extension storage from browser's extension page.",
+    card7_title:"Hecho con Amor",card7_desc:"Construido enteramente con el corazoncito. ❤️",
+    cl_tag:"Version history",cl_title:"Changelog",cl_desc:"A record of every update.",cl_latest:"Latest",
+    cl_herobrine:"Herobrine has been removed",
+    cl107_1:"Browser logos in compatibility pills",cl107_2:"Discord button in header",
+    cl107_3:"Settings redesigned with icon sections",cl107_4:"Accent color only applies in light mode",
+    cl106_1:"Accent color picker (8 swatches)",cl106_2:"Developer mode with custom search URL",
+    cl106_3:"Keyboard shortcuts (Ctrl+K, Ctrl+1–4, Ctrl+Shift+F)",cl106_4:"Confirm modal before clearing history",
+    cl106_5:"Inline preview via DuckDuckGo API",cl106_6:"Favorites tab (up to 50 entries)",
+    cl105_1:"9-language interface translation",cl105_2:"Search history (30 entries)",
+    cl105_3:"Dark mode toggle",cl105_4:"4 search engine presets",
+    cl101_1:"Initial release",cl101_2:"PDF / EPUB / MOBI format filters",cl101_3:"Search with Enter key",
+    card8_title:'Smart Favorites',
+    card8_desc:'Label, sort and re-launch saved searches instantly.',
+    feat_author:'Author field',
+    feat_author_desc:'Click <strong>Search by author</strong> below the format filters to reveal a dedicated author field. The extension builds precise operator queries:',
+    author_tip:'The extension also detects author names in your query automatically and offers to move them to the author field.',
+    feat_smart:'Smart features',
+    smart1:'<strong>Stopword removal</strong> — words like <code>pdf</code>, <code>download</code>, <code>free</code>, <code>ebook</code> are stripped before search.',
+    smart2:'<strong>ISBN detection</strong> — paste a 10 or 13-digit ISBN and get direct buttons to Anna\'s Archive, LibGen, and Open Library.',
+    smart3:'<strong>Context menu</strong> — right-click any selected text and choose "Search in Toilet Finder" to open it instantly.',
+    smart4:'<strong>Paste-to-search</strong> — paste into an empty field and the search fires automatically after 800ms.',
+    smart5:'<strong>Word counter</strong> — a live count shows query length; turns yellow at 6 words, red at 8.',
+    feat_favorites2:'Favorites',
+    fav_label:'Label each favorite: <strong>📖 Reading</strong>, <strong>✅ Downloaded</strong>, or <strong>🔍 Pending</strong>.',
+    fav_sort:'Sort by save date or alphabetically with the A↕Z toggle.',
+    fav_relaunch:'Click ↗ in history to re-launch a search instantly without entering the field.',
+    sc_copy:'Copy query to clipboard',
+    sc_author:'Toggle author field',
+    sc_compact:'Toggle compact mode',
+    cl112_1:'Author field in main search panel with auto-detection',
+    cl112_2:'Favorite labels: 📖 Reading, ✅ Downloaded, 🔍 Pending',
+    cl112_3:'Favorites sort: by date or alphabetically',
+    cl112_4:'Re-launch search with ↗ button in history',
+    cl112_5:'Word counter (yellow at 6w, red at 8w)',
+    cl112_6:'Last search hint below the input field',
+    cl112_7:'Focus mode, exact timestamps & query preview in Dev',
+    cl112_8:'Popup fade-in animation',
+    cl112_9:'ISBN tooltip shows exact target URL',
+    cl112_10:'Shake animation when searching with empty field',
+    cl112_11:'"Made with Love" card now fully translatable'
+  },
+  es:{
+    nav_docs:"Documentación",nav_install:"Instalación",nav_features:"Funciones",
+    nav_shortcuts:"Atajos",nav_help:"Ayuda & FAQ",nav_changes:"Cambios",
+    hero_eyebrow:"Extensión de navegador",
+    hero_desc:"Encuentra archivos PDF, EPUB y MOBI en la web — rápido, privado y sin complicaciones.",
+    badge_stable:"✓ v1.10 estable",badge_formats:"PDF · EPUB · MOBI",badge_langs:"9 idiomas",badge_private:"Sin datos recopilados",
+    engines_label:"Motores de búsqueda compatibles",
+    dl_zip_title:"Descargar .zip",dl_zip_sub:"Instalación manual · Todos los navegadores",
+    dl_store_title:"Tienda del navegador",dl_store_sub:"Un clic · Actualizaciones automáticas",
+    modal_zip_title:"Descargar .zip",modal_zip_sub:"Extrae y carga como extensión sin empaquetar.",
+    dl_zip_btn:"Descargar Toilet_Finder.zip",
+    modal_store_title:"Instalar desde la tienda",modal_store_sub:"Elige tu navegador para abrir la tienda.",
+    store_chrome_note:"Chrome y Brave",store_ff_note:"Mozilla Firefox",store_edge_note:"Microsoft Edge",
+    docs_tag:"Visión general",docs_title:"¿Qué es Toilet Finder?",
+    docs_desc:"Una extensión que automatiza la búsqueda de ebooks.",
+    card1_title:"Búsqueda inteligente",card1_desc:"Añade operadores filetype automáticamente.",
+    card2_title:"Multi-formato",card2_desc:"Filtra por PDF, EPUB o MOBI — o los tres.",
+    card3_title:"Historial y Favoritos",card3_desc:"Cada búsqueda guardada localmente.",
+    card4_title:"Multi-motor",card4_desc:"Google, Bing, DuckDuckGo, Brave — o URL propia.",
+    card5_title:"Vista previa",card5_desc:"Previsualización inline mientras escribes.",
+    card6_title:"Búsqueda por autor",card6_desc:"Campos separados para título y autor — resultados más precisos.",
+    browsers_tag:"Compatibilidad",browsers_title:"Navegadores compatibles",
+    install_tag:"Instalación",install_title:"Instalación",install_desc:"Dos formas de instalar. Elige la que mejor te funcione.",
+    install_note:"Manifest V2. Chrome, Edge y Brave requieren Modo Desarrollador. Firefox usa about:debugging.",
+    ff1_t:"Descarga el .zip",ff1_d:"Obtén pem-search.zip y descomprímelo en cualquier carpeta.",
+    ff2_t:"Abre about:debugging",ff2_d:"Escribe about:debugging#/runtime/this-firefox en la barra de dirección.",
+    ff3_t:"Carga complemento temporal",ff3_d:"Haz clic en Cargar complemento temporal y selecciona manifest.json.",
+    ff4_t:"Listo",ff4_d:"El icono aparece en la barra de herramientas.",
+    firefox_warn:"Las extensiones temporales se eliminan al reiniciar Firefox.",
+    ch1_t:"Activa el Modo Desarrollador",ch1_d:"Ve a chrome://extensions y activa el Modo Desarrollador.",
+    ch2_t:"Cargar sin empaquetar",ch2_d:"Haz clic en Cargar sin empaquetar y selecciona la carpeta con manifest.json.",
+    ch3_t:"Anclar a la barra",ch3_d:"Ancla Toilet Finder desde el icono de puzzle.",
+    feat_tag:"Cómo funciona",feat_title:"Funciones",feat_desc:"Todo dentro de la extensión explicado.",
+    feat_search:"Búsqueda",feat_search_desc:"Escribe un título o autor, elige formato y pulsa Enter:",
+    search_tip:"Incluye el nombre del autor para mejores resultados.",
+    feat_filters:"Filtros",filter_all:"Todo",filter_all_desc:"busca PDF + EPUB + MOBI al mismo tiempo.",
+    filter_pdf_desc:"ideal para libros de texto y manuales.",filter_epub_desc:"ideal para novelas y ebooks.",filter_mobi_desc:"formato antiguo compatible con Kindle.",
+    feat_history:"Historial",hist1:"Haz clic en cualquier entrada para restaurar la búsqueda.",
+    hist2:"★ guarda en Favoritos. Haz clic de nuevo para quitar.",hist3:"× elimina esa entrada.",hist4:"Borrar todo muestra un modal de confirmación.",
+    feat_favorites:"Favoritos",fav1:"Añade con ★ desde el historial. Máximo 50.",fav2:"Haz clic en un favorito para repetir la búsqueda.",fav3:"No se eliminan automáticamente.",
+    feat_preview:"Vista previa",preview_desc:"Al escribir (3+ chars) aparece un panel con título, URL y descripción.",preview_warn:"Funciona mejor con libros conocidos.",
+    feat_dev:"Modo desarrollador",dev_desc:"Actívalo en Ajustes para mostrar el campo de URL personalizada.",dev_warn:"Guardar una URL personalizada desactiva los motores predefinidos.",
+    sc_tag:"Teclado",sc_title:"Atajos",sc_desc:"Solo activos cuando el popup está abierto.",
+    sc_col_action:"Acción",sc_col_shortcut:"Atajo",
+    sc_run:"Buscar",sc_focus:"Enfocar búsqueda",sc_tab1:"Ir a Búsqueda",sc_tab2:"Ir a Historial",
+    sc_tab3:"Ir a Favoritos",sc_tab4:"Ir a Ajustes",sc_filter:"Ciclar filtros",sc_close:"Cerrar popup",
+    sc_tip:"Aparece una notificación breve al usar un atajo.",
+    faq_tag:"Soporte",faq_title:"Ayuda & FAQ",faq_desc:"Preguntas frecuentes.",
+    faq1_q:"¿Por qué desaparece al reiniciar Firefox?",faq1_a:"Firefox solo mantiene extensiones temporales en la sesión actual. Recárgala en about:debugging.",
+    faq2_q:"La vista previa no muestra nada.",faq2_a:"Usa la API de DuckDuckGo, funciona para libros populares. Títulos oscuros no devuelven nada.",
+    faq3_q:"¿Recopila datos?",faq3_a:"No. Todo se guarda localmente con browser.storage.local.",
+    faq4_q:"El color de acento no funciona en modo oscuro.",faq4_a:"Intencionado. El modo oscuro usa paleta neutra. El acento se aplica en modo claro.",
+    faq5_q:"¿Puedo cambiar el logo?",faq5_a:"Sí. Reemplaza icons/logo.png (64×64 PNG recomendado).",
+    faq6_q:"¿Cómo reseteo todo?",faq6_a:"Borra historial y favoritos desde sus pestañas correspondientes.",
+    card7_title:"Hecho con Amor",card7_desc:"Construido enteramente con el corazoncito. ❤️",
+    cl_tag:"Historial",cl_title:"Cambios",cl_desc:"Registro de todas las actualizaciones.",cl_latest:"Última",
+    cl_herobrine:"Herobrine ha sido eliminado",
+    cl107_1:"Logos de navegadores en pastillas de compatibilidad",cl107_2:"Botón de Discord en el encabezado",
+    cl107_3:"Ajustes rediseñados con secciones de iconos",cl107_4:"El color de acento solo aplica en modo claro",
+    cl106_1:"Selector de color de acento (8 opciones)",cl106_2:"Modo desarrollador con URL de búsqueda personalizada",
+    cl106_3:"Atajos de teclado (Ctrl+K, Ctrl+1–4, Ctrl+Shift+F)",cl106_4:"Modal de confirmación al limpiar historial",
+    cl106_5:"Vista previa inline via API de DuckDuckGo",cl106_6:"Pestaña de favoritos (hasta 50 entradas)",
+    cl105_1:"Traducción a 9 idiomas",cl105_2:"Historial de búsqueda (30 entradas)",
+    cl105_3:"Modo oscuro",cl105_4:"4 motores de búsqueda predefinidos",
+    cl101_1:"Versión inicial",cl101_2:"Filtros de formato PDF / EPUB / MOBI",cl101_3:"Búsqueda con la tecla Enter",
+    card8_title:'Favoritos inteligentes',
+    card8_desc:'Etiqueta, ordena y relanza búsquedas guardadas al instante.',
+    feat_author:'Campo de autor',
+    feat_author_desc:'Haz clic en <strong>Buscar por autor</strong> bajo los filtros para revelar el campo de autor. La extensión construye queries precisas:',
+    author_tip:'La extensión también detecta nombres de autor en tu búsqueda y ofrece moverlos al campo de autor automáticamente.',
+    feat_smart:'Funciones inteligentes',
+    smart1:'<strong>Eliminación de palabras vacías</strong> — palabras como <code>pdf</code>, <code>descargar</code>, <code>gratis</code>, <code>ebook</code> se eliminan antes de buscar.',
+    smart2:'<strong>Detección de ISBN</strong> — pega un ISBN de 10 o 13 dígitos y obtén botones directos a Anna\'s Archive, LibGen y Open Library.',
+    smart3:'<strong>Menú contextual</strong> — clic derecho sobre texto seleccionado y elige "Buscar en Toilet Finder".',
+    smart4:'<strong>Pegar para buscar</strong> — pega en el campo vacío y la búsqueda se lanza automáticamente en 800ms.',
+    smart5:'<strong>Contador de palabras</strong> — muestra la longitud de la query; amarillo a 6 palabras, rojo a 8.',
+    feat_favorites2:'Favoritos',
+    fav_label:'Etiqueta cada favorito: <strong>📖 Leyendo</strong>, <strong>✅ Descargado</strong>, o <strong>🔍 Pendiente</strong>.',
+    fav_sort:'Ordena por fecha de guardado o alfabéticamente con el toggle A↕Z.',
+    fav_relaunch:'Clic en ↗ en el historial para relanzar la búsqueda directamente.',
+    sc_copy:'Copiar query al portapapeles',
+    sc_author:'Mostrar/ocultar campo autor',
+    sc_compact:'Alternar modo compacto',
+    cl112_1:'Campo de autor en el panel principal con detección automática',
+    cl112_2:'Etiquetas en favoritos: 📖 Leyendo, ✅ Descargado, 🔍 Pendiente',
+    cl112_3:'Ordenar favoritos: por fecha o alfabéticamente',
+    cl112_4:'Relanzar búsqueda con botón ↗ en el historial',
+    cl112_5:'Contador de palabras (amarillo a 6p, rojo a 8p)',
+    cl112_6:'Última búsqueda como sugerencia bajo el campo',
+    cl112_7:'Modo foco, timestamps exactos y vista previa en Dev',
+    cl112_8:'Animación de entrada del popup',
+    cl112_9:'Tooltip del ISBN muestra la URL exacta de destino',
+    cl112_10:'Animación de vibración al buscar con campo vacío',
+    cl112_11:'Tarjeta "Hecho con Amor" completamente traducible'
+  },
+  fr:{
+    nav_docs:"Documentation",nav_install:"Installation",nav_features:"Fonctions",nav_shortcuts:"Raccourcis",nav_help:"Aide & FAQ",nav_changes:"Changelog",
+    hero_eyebrow:"Extension navigateur",hero_desc:"Trouvez des fichiers PDF, EPUB et MOBI sur le web.",
+    badge_stable:"✓ v1.10 stable",badge_formats:"PDF · EPUB · MOBI",badge_langs:"9 langues",badge_private:"Aucune donnée",
+    engines_label:"Moteurs compatibles",dl_zip_title:"Télécharger .zip",dl_zip_sub:"Installation manuelle",dl_store_title:"Boutique",dl_store_sub:"Un clic · Mises à jour auto",
+    modal_zip_title:"Télécharger .zip",modal_zip_sub:"Extrayez et chargez comme extension.",dl_zip_btn:"Télécharger Toilet_Finder.zip",
+    modal_store_title:"Installer depuis la boutique",modal_store_sub:"Choisissez votre navigateur.",store_chrome_note:"Chrome et Brave",store_ff_note:"Mozilla Firefox",store_edge_note:"Microsoft Edge",
+    docs_tag:"Aperçu",docs_title:"Qu'est-ce que Toilet Finder?",docs_desc:"Une extension qui automatise la recherche d'ebooks.",
+    card1_title:"Recherche intelligente",card1_desc:"Ajoute les opérateurs filetype automatiquement.",card2_title:"Multi-format",card2_desc:"Filtrez par PDF, EPUB ou MOBI.",card3_title:"Historique & Favoris",card3_desc:"Chaque recherche sauvegardée.",card4_title:"Multi-moteur",card4_desc:"Google, Bing, DuckDuckGo, Brave.",card5_title:"Aperçu",card5_desc:"Prévisualisation inline.",card6_title:"Recherche par auteur",card6_desc:"Champs séparés pour titre et auteur — résultats plus précis.",
+    browsers_tag:"Compatibilité",browsers_title:"Navigateurs compatibles",
+    install_tag:"Configuration",install_title:"Installation",install_desc:"Deux façons d'installer.",install_note:"Manifest V2. Chrome, Edge et Brave nécessitent le Mode Développeur.",
+    ff1_t:"Téléchargez le .zip",ff1_d:"Obtenez pem-search.zip et extrayez-le.",ff2_t:"Ouvrez about:debugging",ff2_d:"Tapez about:debugging#/runtime/this-firefox.",ff3_t:"Charger un module",ff3_d:"Cliquez Charger un module temporaire et sélectionnez manifest.json.",ff4_t:"Terminé",ff4_d:"L'icône apparaît dans la barre.",firefox_warn:"Les extensions temporaires sont supprimées au redémarrage.",
+    ch1_t:"Mode Développeur",ch1_d:"Allez sur chrome://extensions et activez le Mode Développeur.",ch2_t:"Charger",ch2_d:"Cliquez Charger l'extension et sélectionnez le dossier.",ch3_t:"Épingler",ch3_d:"Épinglez Toilet Finder via l'icône puzzle.",
+    feat_tag:"Fonctionnement",feat_title:"Fonctions",feat_desc:"Tout dans l'extension expliqué.",feat_search:"Recherche",feat_search_desc:"Tapez un titre, choisissez le format, appuyez Entrée:",search_tip:"Incluez le nom de l'auteur pour de meilleurs résultats.",
+    feat_filters:"Filtres",filter_all:"Tout",filter_all_desc:"PDF + EPUB + MOBI.",filter_pdf_desc:"manuels, articles.",filter_epub_desc:"romans et ebooks.",filter_mobi_desc:"format Kindle.",
+    feat_history:"Historique",hist1:"Cliquez pour restaurer.",hist2:"★ sauvegarde en Favoris.",hist3:"× supprime.",hist4:"Tout effacer affiche une modal.",
+    feat_favorites:"Favoris",fav1:"Ajoutez avec ★. Maximum 50.",fav2:"Cliquez pour relancer.",fav3:"Jamais supprimés automatiquement.",
+    feat_preview:"Aperçu",preview_desc:"Panneau avec titre, URL et description en tapant.",preview_warn:"Fonctionne pour les livres populaires.",
+    feat_dev:"Mode développeur",dev_desc:"Activez dans Paramètres pour l'URL personnalisée.",dev_warn:"L'URL personnalisée désactive les moteurs prédéfinis.",
+    sc_tag:"Clavier",sc_title:"Raccourcis",sc_desc:"Actifs uniquement quand le popup est ouvert.",sc_col_action:"Action",sc_col_shortcut:"Raccourci",
+    sc_run:"Lancer",sc_focus:"Focaliser",sc_tab1:"Onglet Recherche",sc_tab2:"Onglet Historique",sc_tab3:"Onglet Favoris",sc_tab4:"Onglet Paramètres",sc_filter:"Changer filtre",sc_close:"Fermer",
+    sc_tip:"Une notification confirme l'action.",
+    faq_tag:"Support",faq_title:"Aide & FAQ",faq_desc:"Questions fréquentes.",
+    faq1_q:"Pourquoi l'extension disparaît après redémarrage?",faq1_a:"Firefox supprime les temporaires chaque session. Rechargez via about:debugging.",
+    faq2_q:"L'aperçu ne montre rien.",faq2_a:"API DuckDuckGo pour livres populaires. Titres obscurs → rien.",
+    faq3_q:"Collecte des données?",faq3_a:"Non. Tout local via browser.storage.local.",
+    faq4_q:"Couleur d'accent inactive en sombre.",faq4_a:"Voulu. Mode sombre = palette neutre. Accent en mode clair.",
+    faq5_q:"Changer le logo?",faq5_a:"Oui. Remplacez icons/logo.png (64×64 PNG).",
+    faq6_q:"Comment réinitialiser?",faq6_a:"Effacez historique et favoris depuis leurs onglets.",
+    card7_title:"Fait avec Amour",card7_desc:"Construit entièrement avec le petit cœur. ❤️",
+    cl_tag:"Historique",cl_title:"Changelog",cl_desc:"Toutes les mises à jour.",cl_latest:"Dernière",
+    cl_herobrine:"Herobrine a été supprimé",
+    cl107_1:"Logos de navigateurs dans les pastilles",cl107_2:"Bouton Discord dans l'en-tête",
+    cl107_3:"Paramètres repensés avec sections d'icônes",cl107_4:"Couleur d'accent uniquement en mode clair",
+    cl106_1:"Sélecteur de couleur d'accent (8 options)",cl106_2:"Mode développeur avec URL personnalisée",
+    cl106_3:"Raccourcis clavier (Ctrl+K, Ctrl+1–4, Ctrl+Shift+F)",cl106_4:"Modal de confirmation avant suppression",
+    cl106_5:"Aperçu inline via API DuckDuckGo",cl106_6:"Onglet Favoris (jusqu'à 50 entrées)",
+    cl105_1:"Interface en 9 langues",cl105_2:"Historique de recherche (30 entrées)",
+    cl105_3:"Mode sombre",cl105_4:"4 moteurs de recherche prédéfinis",
+    cl101_1:"Version initiale",cl101_2:"Filtres PDF / EPUB / MOBI",cl101_3:"Recherche avec Entrée",
+    card8_title:'Favoris intelligents',
+    card8_desc:'Étiquetez, triez et relancez vos recherches sauvegardées.',
+    feat_author:'Champ auteur',
+    feat_author_desc:'Cliquez sur <strong>Rechercher par auteur</strong> sous les filtres pour afficher le champ auteur. L\'extension génère des requêtes précises:',
+    author_tip:'L\'extension détecte aussi les noms d\'auteur dans votre requête et propose de les déplacer automatiquement.',
+    feat_smart:'Fonctions intelligentes',
+    smart1:'<strong>Suppression de mots vides</strong> — des mots comme <code>pdf</code>, <code>télécharger</code>, <code>gratuit</code>, <code>ebook</code> sont supprimés avant la recherche.',
+    smart2:'<strong>Détection ISBN</strong> — collez un ISBN 10 ou 13 chiffres et obtenez des boutons directs vers Anna\'s Archive, LibGen et Open Library.',
+    smart3:'<strong>Menu contextuel</strong> — clic droit sur du texte sélectionné pour choisir "Rechercher dans Toilet Finder".',
+    smart4:'<strong>Coller pour chercher</strong> — collez dans le champ vide et la recherche se lance après 800ms.',
+    smart5:'<strong>Compteur de mots</strong> — affiche la longueur de la requête; jaune à 6 mots, rouge à 8.',
+    feat_favorites2:'Favoris',
+    fav_label:'Étiquetez chaque favori: <strong>📖 En lecture</strong>, <strong>✅ Téléchargé</strong>, ou <strong>🔍 En attente</strong>.',
+    fav_sort:'Triez par date de sauvegarde ou alphabétiquement avec le bouton A↕Z.',
+    fav_relaunch:'Cliquez sur ↗ dans l\'historique pour relancer une recherche directement.',
+    sc_copy:'Copier la requête',
+    sc_author:'Afficher/masquer le champ auteur',
+    sc_compact:'Mode compact',
+    cl112_1:'Champ auteur dans le panneau principal avec détection automatique',
+    cl112_2:'Étiquettes favoris: 📖 En lecture, ✅ Téléchargé, 🔍 En attente',
+    cl112_3:'Tri des favoris: par date ou alphabétiquement',
+    cl112_4:'Relancer une recherche avec le bouton ↗ dans l\'historique',
+    cl112_5:'Compteur de mots (jaune à 6m, rouge à 8m)',
+    cl112_6:'Dernière recherche suggérée sous le champ',
+    cl112_7:'Mode focus, timestamps exacts et aperçu en Dev',
+    cl112_8:'Animation d\'entrée du popup',
+    cl112_9:'Tooltip ISBN affiche l\'URL exacte',
+    cl112_10:'Animation de secousse sur champ vide',
+    cl112_11:'Carte "Fait avec Amour" entièrement traduisible'
+  },
+  de:{
+    nav_docs:"Dokumentation",nav_install:"Installation",nav_features:"Funktionen",nav_shortcuts:"Tastenkürzel",nav_help:"Hilfe & FAQ",nav_changes:"Changelog",
+    hero_eyebrow:"Browser-Erweiterung",hero_desc:"Finde PDF-, EPUB- und MOBI-Dateien im Web.",
+    badge_stable:"✓ v1.10 stabil",badge_formats:"PDF · EPUB · MOBI",badge_langs:"9 Sprachen",badge_private:"Keine Daten",
+    engines_label:"Kompatible Suchmaschinen",dl_zip_title:".zip herunterladen",dl_zip_sub:"Manuelle Installation",dl_store_title:"Browser-Store",dl_store_sub:"Ein Klick · Auto-Updates",
+    modal_zip_title:".zip herunterladen",modal_zip_sub:"Entpacken und als Erweiterung laden.",dl_zip_btn:"Toilet_Finder.zip herunterladen",
+    modal_store_title:"Aus Store installieren",modal_store_sub:"Wähle deinen Browser.",store_chrome_note:"Chrome und Brave",store_ff_note:"Mozilla Firefox",store_edge_note:"Microsoft Edge",
+    docs_tag:"Übersicht",docs_title:"Was ist Toilet Finder?",docs_desc:"Eine Erweiterung für die automatisierte Ebook-Suche.",
+    card1_title:"Intelligente Suche",card1_desc:"Dateitypoperatoren werden automatisch hinzugefügt.",card2_title:"Multi-Format",card2_desc:"PDF, EPUB oder MOBI — oder alle drei.",card3_title:"Verlauf & Favoriten",card3_desc:"Jede Suche lokal gespeichert.",card4_title:"Multi-Engine",card4_desc:"Google, Bing, DuckDuckGo, Brave.",card5_title:"Vorschau",card5_desc:"Inline-Vorschau beim Tippen.",card6_title:"Autorensuche",card6_desc:"Getrennte Felder für Titel und Autor — präzisere Ergebnisse.",
+    browsers_tag:"Kompatibilität",browsers_title:"Unterstützte Browser",
+    install_tag:"Einrichtung",install_title:"Installation",install_desc:"Zwei Wege zur Installation.",install_note:"Manifest V2. Chrome, Edge und Brave brauchen Entwicklermodus.",
+    ff1_t:".zip herunterladen",ff1_d:"pem-search.zip herunterladen und entpacken.",ff2_t:"about:debugging öffnen",ff2_d:"about:debugging#/runtime/this-firefox eingeben.",ff3_t:"Temporäres Add-on laden",ff3_d:"Temporäres Add-on laden klicken, manifest.json auswählen.",ff4_t:"Fertig",ff4_d:"Symbol erscheint in der Symbolleiste.",firefox_warn:"Temporäre Erweiterungen werden beim Neustart entfernt.",
+    ch1_t:"Entwicklermodus aktivieren",ch1_d:"chrome://extensions öffnen, Entwicklermodus einschalten.",ch2_t:"Entpackt laden",ch2_d:"Entpackt laden klicken, Ordner mit manifest.json auswählen.",ch3_t:"Anheften",ch3_d:"Toilet Finder über das Puzzle-Symbol anheften.",
+    feat_tag:"Funktionsweise",feat_title:"Funktionen",feat_desc:"Alles in der Erweiterung erklärt.",feat_search:"Suche",feat_search_desc:"Titel eingeben, Format wählen, Enter drücken:",search_tip:"Autorennamen für bessere Ergebnisse hinzufügen.",
+    feat_filters:"Filter",filter_all:"Alle",filter_all_desc:"PDF + EPUB + MOBI gleichzeitig.",filter_pdf_desc:"Lehrbücher, Artikel.",filter_epub_desc:"Romane und Ebooks.",filter_mobi_desc:"älteres Kindle-Format.",
+    feat_history:"Verlauf",hist1:"Klicken zum Wiederherstellen.",hist2:"★ speichert in Favoriten.",hist3:"× löscht Eintrag.",hist4:"Alle löschen zeigt Bestätigungsdialog.",
+    feat_favorites:"Favoriten",fav1:"Mit ★ hinzufügen. Bis zu 50.",fav2:"Klicken zum Wiederholen.",fav3:"Werden nie automatisch gelöscht.",
+    feat_preview:"Vorschau",preview_desc:"Panel mit Titel, URL und Beschreibung beim Tippen.",preview_warn:"Funktioniert am besten für bekannte Bücher.",
+    feat_dev:"Entwicklermodus",dev_desc:"In Einstellungen aktivieren für benutzerdefinierte URL.",dev_warn:"Benutzerdefinierte URL deaktiviert voreingestellte Suchmaschinen.",
+    sc_tag:"Tastatur",sc_title:"Tastenkürzel",sc_desc:"Nur aktiv wenn Popup offen.",sc_col_action:"Aktion",sc_col_shortcut:"Kürzel",
+    sc_run:"Suche starten",sc_focus:"Suchfeld fokussieren",sc_tab1:"Tab Suche",sc_tab2:"Tab Verlauf",sc_tab3:"Tab Favoriten",sc_tab4:"Tab Einstellungen",sc_filter:"Filter wechseln",sc_close:"Popup schließen",
+    sc_tip:"Kurze Benachrichtigung bei Kürzelverwendung.",
+    faq_tag:"Support",faq_title:"Hilfe & FAQ",faq_desc:"Häufige Fragen.",
+    faq1_q:"Warum verschwindet die Erweiterung nach Neustart?",faq1_a:"Firefox behält temporäre Erweiterungen nur für die Sitzung. Über about:debugging neu laden.",
+    faq2_q:"Vorschau zeigt nichts.",faq2_a:"DuckDuckGo-API für bekannte Bücher. Unbekannte → nichts.",
+    faq3_q:"Sammelt Daten?",faq3_a:"Nein. Alles lokal über browser.storage.local.",
+    faq4_q:"Akzentfarbe im Dunkelmodus inaktiv.",faq4_a:"Beabsichtigt. Dunkelmodus = neutrale Palette.",
+    faq5_q:"Logo ändern?",faq5_a:"Ja. icons/logo.png ersetzen (64×64 PNG).",
+    faq6_q:"Alles zurücksetzen?",faq6_a:"Verlauf und Favoriten aus den jeweiligen Tabs leeren.",
+    card7_title:"Mit Liebe gemacht",card7_desc:"Vollständig mit dem kleinen Herzchen gebaut. ❤️",
+    cl_tag:"Versionshistorie",cl_title:"Changelog",cl_desc:"Alle Updates.",cl_latest:"Neueste",
+    cl_herobrine:"Herobrine wurde entfernt",
+    cl107_1:"Browser-Logos in Kompatibilitätspillen",cl107_2:"Discord-Schaltfläche im Header",
+    cl107_3:"Einstellungen mit Symbolabschnitten neu gestaltet",cl107_4:"Akzentfarbe gilt nur im Hellmodus",
+    cl106_1:"Akzentfarb-Auswahl (8 Farben)",cl106_2:"Entwicklermodus mit benutzerdefinierter URL",
+    cl106_3:"Tastenkürzel (Ctrl+K, Ctrl+1–4, Ctrl+Shift+F)",cl106_4:"Bestätigungsdialog beim Löschen",
+    cl106_5:"Inline-Vorschau via DuckDuckGo-API",cl106_6:"Favoriten-Tab (bis zu 50 Einträge)",
+    cl105_1:"9-Sprachen-Interface",cl105_2:"Suchverlauf (30 Einträge)",
+    cl105_3:"Dunkelmodus",cl105_4:"4 Suchmaschinen-Voreinstellungen",
+    cl101_1:"Erstveröffentlichung",cl101_2:"PDF / EPUB / MOBI Filter",cl101_3:"Suche mit Enter-Taste",
+    card8_title:'Smarte Favoriten',
+    card8_desc:'Markieren, sortieren und gespeicherte Suchen direkt starten.',
+    feat_author:'Autorenfeld',
+    feat_author_desc:'Klicken Sie auf <strong>Nach Autor suchen</strong> unterhalb der Filter, um das Autorenfeld anzuzeigen. Die Erweiterung erstellt präzise Suchanfragen:',
+    author_tip:'Die Erweiterung erkennt Autorennamen in Ihrer Suche automatisch und bietet an, sie ins Autorenfeld zu verschieben.',
+    feat_smart:'Intelligente Funktionen',
+    smart1:'<strong>Stoppwort-Entfernung</strong> — Wörter wie <code>pdf</code>, <code>download</code>, <code>kostenlos</code>, <code>ebook</code> werden vor der Suche entfernt.',
+    smart2:'<strong>ISBN-Erkennung</strong> — Fügen Sie eine 10- oder 13-stellige ISBN ein und erhalten Sie direkte Buttons zu Anna\'s Archive, LibGen und Open Library.',
+    smart3:'<strong>Kontextmenü</strong> — Rechtsklick auf markierten Text und "In Toilet Finder suchen" wählen.',
+    smart4:'<strong>Einfügen zum Suchen</strong> — Text ins leere Feld einfügen und die Suche startet nach 800ms automatisch.',
+    smart5:'<strong>Wortzähler</strong> — zeigt die Länge der Suchanfrage; gelb ab 6 Wörtern, rot ab 8.',
+    feat_favorites2:'Favoriten',
+    fav_label:'Markieren Sie jeden Favoriten: <strong>📖 Lesen</strong>, <strong>✅ Heruntergeladen</strong>, oder <strong>🔍 Ausstehend</strong>.',
+    fav_sort:'Sortieren nach Datum oder alphabetisch mit dem A↕Z-Schalter.',
+    fav_relaunch:'Klicken Sie ↗ im Verlauf, um eine Suche direkt zu starten.',
+    sc_copy:'Suchanfrage kopieren',
+    sc_author:'Autorenfeld ein-/ausblenden',
+    sc_compact:'Kompaktmodus umschalten',
+    cl112_1:'Autorenfeld im Hauptpanel mit automatischer Erkennung',
+    cl112_2:'Favoriten-Labels: 📖 Lesen, ✅ Heruntergeladen, 🔍 Ausstehend',
+    cl112_3:'Favoriten sortieren: nach Datum oder alphabetisch',
+    cl112_4:'Suche mit ↗-Button im Verlauf direkt starten',
+    cl112_5:'Wortzähler (gelb ab 6W, rot ab 8W)',
+    cl112_6:'Letzte Suche als Hinweis unter dem Eingabefeld',
+    cl112_7:'Fokusmodus, exakte Zeitstempel & Vorschau in Dev',
+    cl112_8:'Popup-Einblend-Animation',
+    cl112_9:'ISBN-Tooltip zeigt genaue Ziel-URL',
+    cl112_10:'Schüttel-Animation bei leerem Suchfeld',
+    cl112_11:'"Mit Liebe gemacht"-Karte vollständig übersetzbar'
+  },
+  pt:{
+    nav_docs:"Documentação",nav_install:"Instalação",nav_features:"Funções",nav_shortcuts:"Atalhos",nav_help:"Ajuda & FAQ",nav_changes:"Changelog",
+    hero_eyebrow:"Extensão de navegador",hero_desc:"Encontre arquivos PDF, EPUB e MOBI na web.",
+    badge_stable:"✓ v1.10 estável",badge_formats:"PDF · EPUB · MOBI",badge_langs:"9 idiomas",badge_private:"Sem dados",
+    engines_label:"Motores compatíveis",dl_zip_title:"Baixar .zip",dl_zip_sub:"Instalação manual",dl_store_title:"Loja do navegador",dl_store_sub:"Um clique · Atualizações automáticas",
+    modal_zip_title:"Baixar .zip",modal_zip_sub:"Extraia e carregue como extensão.",dl_zip_btn:"Baixar Toilet_Finder.zip",
+    modal_store_title:"Instalar da loja",modal_store_sub:"Escolha seu navegador.",store_chrome_note:"Chrome e Brave",store_ff_note:"Mozilla Firefox",store_edge_note:"Microsoft Edge",
+    docs_tag:"Visão geral",docs_title:"O que é o Toilet Finder?",docs_desc:"Uma extensão que automatiza a busca de ebooks.",
+    card1_title:"Busca inteligente",card1_desc:"Adiciona operadores filetype automaticamente.",card2_title:"Multi-formato",card2_desc:"PDF, EPUB ou MOBI — ou todos.",card3_title:"Histórico e Favoritos",card3_desc:"Cada busca salva localmente.",card4_title:"Multi-motor",card4_desc:"Google, Bing, DuckDuckGo, Brave.",card5_title:"Pré-visualização",card5_desc:"Prévia inline enquanto digita.",card6_title:"Pesquisa por autor",card6_desc:"Campos separados para título e autor — resultados mais precisos.",
+    browsers_tag:"Compatibilidade",browsers_title:"Navegadores suportados",
+    install_tag:"Configuração",install_title:"Instalação",install_desc:"Duas formas de instalar.",install_note:"Manifest V2. Chrome, Edge e Brave requerem Modo Desenvolvedor.",
+    ff1_t:"Baixe o .zip",ff1_d:"Obtenha pem-search.zip e extraia.",ff2_t:"Abra about:debugging",ff2_d:"Digite about:debugging#/runtime/this-firefox.",ff3_t:"Carregar complemento",ff3_d:"Clique Carregar complemento temporário e selecione manifest.json.",ff4_t:"Pronto",ff4_d:"O ícone aparece na barra.",firefox_warn:"Extensões temporárias são removidas ao reiniciar.",
+    ch1_t:"Ativar Modo Desenvolvedor",ch1_d:"Vá a chrome://extensions e ative.",ch2_t:"Carregar",ch2_d:"Clique Carregar sem empacotar e selecione a pasta.",ch3_t:"Fixar",ch3_d:"Fixe Toilet Finder pelo ícone de puzzle.",
+    feat_tag:"Como funciona",feat_title:"Funções",feat_desc:"Tudo na extensão explicado.",feat_search:"Busca",feat_search_desc:"Digite título ou autor, escolha formato, pressione Enter:",search_tip:"Inclua o nome do autor para melhores resultados.",
+    feat_filters:"Filtros",filter_all:"Tudo",filter_all_desc:"PDF + EPUB + MOBI simultaneamente.",filter_pdf_desc:"livros didáticos, artigos.",filter_epub_desc:"romances e ebooks.",filter_mobi_desc:"formato Kindle antigo.",
+    feat_history:"Histórico",hist1:"Clique para restaurar a busca.",hist2:"★ salva em Favoritos.",hist3:"× remove entrada.",hist4:"Limpar tudo mostra confirmação.",
+    feat_favorites:"Favoritos",fav1:"Adicione com ★. Até 50.",fav2:"Clique para repetir a busca.",fav3:"Nunca excluídos automaticamente.",
+    feat_preview:"Pré-visualização",preview_desc:"Painel com título, URL e descrição enquanto digita.",preview_warn:"Funciona melhor com livros populares.",
+    feat_dev:"Modo desenvolvedor",dev_desc:"Ative em Configurações para URL personalizada.",dev_warn:"URL personalizada desativa motores predefinidos.",
+    sc_tag:"Teclado",sc_title:"Atalhos",sc_desc:"Ativos apenas com popup aberto.",sc_col_action:"Ação",sc_col_shortcut:"Atalho",
+    sc_run:"Buscar",sc_focus:"Focar busca",sc_tab1:"Aba Busca",sc_tab2:"Aba Histórico",sc_tab3:"Aba Favoritos",sc_tab4:"Aba Configurações",sc_filter:"Ciclar filtros",sc_close:"Fechar popup",
+    sc_tip:"Notificação breve confirma o atalho.",
+    faq_tag:"Suporte",faq_title:"Ajuda & FAQ",faq_desc:"Perguntas frequentes.",
+    faq1_q:"Por que desaparece ao reiniciar Firefox?",faq1_a:"Firefox mantém extensões temporárias só na sessão. Recarregue via about:debugging.",
+    faq2_q:"Prévia não mostra nada.",faq2_a:"API DuckDuckGo para livros populares. Obscuros → nada.",
+    faq3_q:"Coleta dados?",faq3_a:"Não. Tudo local via browser.storage.local.",
+    faq4_q:"Cor de destaque inativa no escuro.",faq4_a:"Intencional. Modo escuro = paleta neutra.",
+    faq5_q:"Posso mudar o logo?",faq5_a:"Sim. Substitua icons/logo.png (64×64 PNG).",
+    faq6_q:"Como resetar tudo?",faq6_a:"Limpe histórico e favoritos nas abas correspondentes.",
+    card7_title:"Feito com Amor",card7_desc:"Construído inteiramente com o coraçãozinho. ❤️",
+    cl_tag:"Histórico",cl_title:"Changelog",cl_desc:"Todas as atualizações.",cl_latest:"Última",
+    cl_herobrine:"Herobrine foi removido",
+    cl107_1:"Logos de navegadores nas pastilhas",cl107_2:"Botão Discord no cabeçalho",
+    cl107_3:"Configurações redesenhadas com seções de ícones",cl107_4:"Cor de destaque apenas no modo claro",
+    cl106_1:"Seletor de cor de destaque (8 opções)",cl106_2:"Modo desenvolvedor com URL personalizada",
+    cl106_3:"Atalhos de teclado (Ctrl+K, Ctrl+1–4, Ctrl+Shift+F)",cl106_4:"Modal de confirmação ao limpar histórico",
+    cl106_5:"Prévia inline via API DuckDuckGo",cl106_6:"Aba de favoritos (até 50 entradas)",
+    cl105_1:"Interface em 9 idiomas",cl105_2:"Histórico de buscas (30 entradas)",
+    cl105_3:"Modo escuro",cl105_4:"4 motores de busca predefinidos",
+    cl101_1:"Versão inicial",cl101_2:"Filtros PDF / EPUB / MOBI",cl101_3:"Busca com a tecla Enter",
+    card8_title:'Favoritos inteligentes',
+    card8_desc:'Etiquete, ordene e relance pesquisas guardadas instantaneamente.',
+    feat_author:'Campo de autor',
+    feat_author_desc:'Clique em <strong>Pesquisar por autor</strong> abaixo dos filtros para revelar o campo de autor. A extensão constrói queries precisas:',
+    author_tip:'A extensão também deteta nomes de autores na sua pesquisa e oferece movê-los para o campo de autor.',
+    feat_smart:'Funções inteligentes',
+    smart1:'<strong>Remoção de stopwords</strong> — palavras como <code>pdf</code>, <code>download</code>, <code>grátis</code>, <code>ebook</code> são removidas antes da pesquisa.',
+    smart2:'<strong>Deteção de ISBN</strong> — cole um ISBN de 10 ou 13 dígitos e obtenha botões diretos para Anna\'s Archive, LibGen e Open Library.',
+    smart3:'<strong>Menu de contexto</strong> — clique com o botão direito no texto selecionado e escolha "Pesquisar no Toilet Finder".',
+    smart4:'<strong>Colar para pesquisar</strong> — cole no campo vazio e a pesquisa inicia automaticamente após 800ms.',
+    smart5:'<strong>Contador de palavras</strong> — mostra o comprimento da query; amarelo a 6 palavras, vermelho a 8.',
+    feat_favorites2:'Favoritos',
+    fav_label:'Etiquete cada favorito: <strong>📖 A ler</strong>, <strong>✅ Descarregado</strong>, ou <strong>🔍 Pendente</strong>.',
+    fav_sort:'Ordene por data ou alfabeticamente com o botão A↕Z.',
+    fav_relaunch:'Clique em ↗ no histórico para relançar uma pesquisa diretamente.',
+    sc_copy:'Copiar query para clipboard',
+    sc_author:'Mostrar/ocultar campo autor',
+    sc_compact:'Alternar modo compacto',
+    cl112_1:'Campo de autor no painel principal com deteção automática',
+    cl112_2:'Etiquetas de favoritos: 📖 A ler, ✅ Descarregado, 🔍 Pendente',
+    cl112_3:'Ordenar favoritos: por data ou alfabeticamente',
+    cl112_4:'Relançar pesquisa com botão ↗ no histórico',
+    cl112_5:'Contador de palavras (amarelo a 6p, vermelho a 8p)',
+    cl112_6:'Última pesquisa sugerida sob o campo',
+    cl112_7:'Modo foco, timestamps exatos e pré-visualização em Dev',
+    cl112_8:'Animação de entrada do popup',
+    cl112_9:'Tooltip do ISBN mostra URL exata de destino',
+    cl112_10:'Animação de vibração no campo vazio',
+    cl112_11:'Cartão "Feito com Amor" totalmente traduzível'
+  },
+};
+
+function setLanguage(lang){
+  if(!T[lang]) lang='en';
+  localStorage.setItem('lang',lang);
+  const t=T[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.dataset.i18n;
+    if(t[k]!==undefined) el.textContent=t[k];
+  });
+  document.getElementById('languageSelect').value=lang;
+}
+
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  localStorage.setItem('dark',document.body.classList.contains('dark'));
+}
+
+function toggleFaq(btn){
+  btn.closest('.faq-item').classList.toggle('open');
+}
+
+function openModal(id){
+  document.getElementById(id).classList.add('show');
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('show');
+}
+
+// close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(ov=>{
+  ov.addEventListener('click',e=>{ if(e.target===ov) ov.classList.remove('show'); });
+});
+
+// close modals on Escape
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('show')); });
+
+// tabs
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+});
+
+window.onload=()=>{
+  const bl=navigator.language.slice(0,2);
+  const lang=localStorage.getItem('lang')||(T[bl]?bl:'en');
+  setLanguage(lang);
+  if(localStorage.getItem('dark')==='true') document.body.classList.add('dark');
+};
+</script>
+</body>
+</html>
